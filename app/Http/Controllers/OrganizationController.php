@@ -14,7 +14,7 @@ use App\Users_orgs;
 
 class OrganizationController extends Controller {
 
-    public function getUserOrganizationByEmail($email){
+    public function getUserOrganizationsByEmail($email){
 
         $user_ = User_::where('emailAddress', $email)->get();
         $userId = null;
