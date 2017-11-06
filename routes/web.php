@@ -18,13 +18,13 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], function () use ($router) {
 
-    $router->get('user_', function () {
+    $router->get('users', function () {
         $res = new App\Http\Controllers\User_Controller();
         $res->index();
         return $res->index();
     });
 
-    $router->get('user_/{email}', function ($email) {
+    $router->get('users/{email}', function ($email) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getUser_byEmail($email);
     });
