@@ -26,9 +26,13 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
 
     $router->get('users/{email}', function ($email) {
         $res = new App\Http\Controllers\User_Controller();
-        return $res->getUser_byEmail($email);
+        return $res->getUser_ByEmail($email);
     });
 
+    $router->get('users/{email}/organizations', function ($email) {
+        $res = new App\Http\Controllers\OrganizationController();
+        return $res->getUserOrganizationByEmail($email);
+    });
 
 });
 

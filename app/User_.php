@@ -14,6 +14,6 @@ use Illuminate\Database\Eloquent\Model;
 class User_ extends Model {
 
     protected $table = 'user_';
-    protected $fillable = ['emailAddress', 'firstName', 'lastName'];
+    protected $fillable = ['userId', 'emailAddress', 'firstName', 'lastName'];
 
 }

@@ -40,7 +40,7 @@ class User_Controller extends Controller {
         return response()->json($user_);
     }
 
-    public function getUser_byEmail($email){
+    public function getUser_ByEmail($email){
         $user_ = User_::where('emailAddress', $email)->get();
         return response()->json($user_);
     }
