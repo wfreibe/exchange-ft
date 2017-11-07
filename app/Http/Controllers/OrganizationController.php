@@ -29,9 +29,9 @@ class OrganizationController extends Controller {
             array_push($aUsers_org, $users_org);
         }
 
-        $organization = Organization::find($aUsers_org);
+        $organizations = Organization::find($aUsers_org);
 
-        return response()->json($organization);
+        return response()->json($organizations);
 
     }
 

@@ -35,21 +35,8 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
     });
 
     $router->get('users/{email}/organizations/{orgname}/projects', function ($email, $orgname) {
-        $res = new App\Http\Controllers\OrganizationController();
+        $res = new App\Http\Controllers\GroupController();
         return $res->getUserOrganizationProjectsByEmailAndOrgName($email, $orgname);
     });
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
