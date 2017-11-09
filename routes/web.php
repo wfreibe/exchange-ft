@@ -24,10 +24,19 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         return $res->index();
     });
 
+    /*
     $router->get('users/{email}', function ($email) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getUser_ByEmail($email);
     });
+    */
+
+    $router->get('users/{email}', ['middleware' => 'auth', function ($email) {
+        $res = new App\Http\Controllers\User_Controller();
+        return $res->getUser_ByEmail($email);
+    }]);
+
+
 
     $router->get('users/{email}/organizations', function ($email) {
         $res = new App\Http\Controllers\OrganizationController();
@@ -40,3 +49,7 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
     });
 
 });
+
+
+// for auth see: https://lumen.laravel.com/docs/5.5/middleware
+// tutorial for oauth0: https://code.tutsplus.com/tutorials/how-to-secure-a-rest-api-with-lumen--cms-27442
