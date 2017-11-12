@@ -16,9 +16,8 @@ class Authenticate
 
     /**
      * Create a new middleware instance.
-     *
+     * Authenticate constructor.
      * @param  \Illuminate\Contracts\Auth\Factory  $auth
-     * @return void
      */
     public function __construct(Auth $auth)
     {

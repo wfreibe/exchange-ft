@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use App\Http\Controllers\Auth0Controller;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -32,24 +33,28 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->app['auth']->viaRequest('api', function ($request) {
 
+            $header = $request->header('authorization');
 
-            $header = $request->header('Api-Token');
+            try {
 
-            /*
-            TODO w.f. make here request to oaut0 ...
-            https://manage.auth0.com/#/apis/5a01b0de6b464d06ace26094/quickstart
-            */
+                $auth0Controller = new Auth0Controller();
+                $res = $auth0Controller->setCurrentToken($header);
 
-            if($header && $header == "birds fly south") {
-                return new User();
+                return $res;
+
+            }
+            catch(\Auth0\SDK\Exception\CoreException $e) {
+                header('HTTP/1.0 401 Unauthorized');
+                echo $e;
+                exit();
             }
 
-            return null;
-
             /*
-            if ($request->input('api_token')) {
-                return User::where('api_token', $request->input('api_token'))->first();
+            if($header && $header == "birds fly south") {
+                return new User();
             }*/
+
+            return null;
 
         });
     }
