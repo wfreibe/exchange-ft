@@ -13,8 +13,9 @@ use Auth0\SDK\Helpers\Cache\FileSystemCacheHandler;
 
 class Auth0Controller extends Controller {
 
-    protected $token;
-    protected $tokenInfo;
+    // protected $token;
+    // protected $tokenInfo;
+    // https://github.com/AzureAD/active-directory-b2c-wordpress-plugin-openidconnect/blob/master/class-b2c-token-checker.php
 
     public function setCurrentToken($token) {
 
@@ -29,20 +30,13 @@ class Auth0Controller extends Controller {
             ]);
 
             $decoded = $verifier->verifyAndDecode($token);
-
             return $decoded;
 
         }
         catch(\Auth0\SDK\Exception\CoreException $e) {
             throw $e;
         }
-    }
 
-    public function privatePing() {
-        return array(
-            "status" => "ok",
-            "message" => "Hello from a private endpoint! You DO need to be authenticated to see this."
-        );
     }
 
 }
