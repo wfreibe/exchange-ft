@@ -36,17 +36,29 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         return $res->getUser_ByEmail($email);
     }]);
 
-
-
+    /*
     $router->get('users/{email}/organizations', function ($email) {
         $res = new App\Http\Controllers\OrganizationController();
         return $res->getUserOrganizationsByEmail($email);
     });
+    */
 
+    $router->get('users/{email}/organizations', ['middleware' => 'auth', function ($email) {
+        $res = new App\Http\Controllers\OrganizationController();
+        return $res->getUserOrganizationsByEmail($email);
+    }]);
+
+    /*
     $router->get('users/{email}/organizations/{orgname}/projects', function ($email, $orgname) {
         $res = new App\Http\Controllers\GroupController();
         return $res->getUserOrganizationProjectsByEmailAndOrgName($email, $orgname);
     });
+    */
+
+    $router->get('users/{email}/organizations/{orgname}/projects', ['middleware' => 'auth', function ($email, $orgname) {
+        $res = new App\Http\Controllers\GroupController();
+        return $res->getUserOrganizationProjectsByEmailAndOrgName($email, $orgname);
+    }]);
 
 });
 

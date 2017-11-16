@@ -13,19 +13,15 @@ use Auth0\SDK\Helpers\Cache\FileSystemCacheHandler;
 
 class Auth0Controller extends Controller {
 
-    // protected $token;
-    // protected $tokenInfo;
-    // https://github.com/AzureAD/active-directory-b2c-wordpress-plugin-openidconnect/blob/master/class-b2c-token-checker.php
-
     public function setCurrentToken($token) {
 
         try {
 
             $verifier = new JWTVerifier([
-                'valid_audiences' => getenv('VALID_AUDIENCES'),
-                'authorized_iss' => getenv('AUTHORIZED_ISS'),
+                'valid_audiences' => explode(",", getenv('VALID_AUDIENCES')),
+                'authorized_iss' => explode(",", getenv('AUTHORIZED_ISS')),
                 'client_secret' => getenv('AUTH0_CLIENT_SECRET'),
-                'supported_algs' => ['RS256'],
+                'supported_algs' => explode(",", getenv('SUPPORTED_ALGS')),
                 'cache' => new FileSystemCacheHandler() // This parameter is optional. By default no cache is used to fetch the Json Web Keys.
             ]);
 
