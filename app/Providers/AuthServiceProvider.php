@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\User;
 use Illuminate\Support\ServiceProvider;
 use App\Http\Controllers\Auth0Controller;
+use Log;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -31,17 +32,21 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->app['auth']->viaRequest('api', function ($request) {
 
-            $header = $request->header('authorization');
+            //$header = $request->header('authorization');
+            $header = $request->header('Authorization');
 
             try {
 
                 $auth0Controller = new Auth0Controller();
                 $res = $auth0Controller->setCurrentToken($header);
+                // Log::info('AuthServiceProvider res1: '.print_r($res, true));
 
                 return $res;
 
             }
             catch(\Auth0\SDK\Exception\CoreException $e) {
+
+                // Log::info('AuthServiceProvider res2: '.print_r($e, true));
                 header('HTTP/1.0 401 Unauthorized');
                 echo $e;
                 exit();

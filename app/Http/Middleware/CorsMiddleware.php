@@ -9,6 +9,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Log;
 
 class CorsMiddleware {
 
@@ -41,6 +42,8 @@ class CorsMiddleware {
         {
             $response->header($key, $value);
         }
+
+        //Log::info('CorsMiddleware res: '.print_r($response, true));
 
         return $response;
     }

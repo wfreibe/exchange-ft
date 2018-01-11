@@ -18,11 +18,19 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], function () use ($router) {
 
+    /*
     $router->get('users', function () {
         $res = new App\Http\Controllers\User_Controller();
         $res->index();
         return $res->index();
     });
+    */
+    $router->get('users', ['middleware' => 'auth', function () {
+        $res = new App\Http\Controllers\User_Controller();
+        $res->index();
+        return $res->index();
+    }]);
+
 
     /*
     $router->get('users/{email}', function ($email) {
@@ -30,15 +38,16 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         return $res->getUser_ByEmail($email);
     });
     */
-
     $router->get('users/email/{email}', ['middleware' => 'auth', function ($email) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getUser_ByEmail($email);
     }]);
 
+
+
     $router->get('users/{userId}', ['middleware' => 'auth', function ($userId) {
         $res = new App\Http\Controllers\User_Controller();
-        return $res->getUser_ByUserId($userId);
+        return $res->getUser_ByUserId($userId)->original[0];
     }]);
 
     /*

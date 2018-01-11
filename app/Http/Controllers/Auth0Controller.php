@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 use Auth0\SDK\JWTVerifier;
 use Auth0\SDK\Helpers\Cache\FileSystemCacheHandler;
+use Log;
 
 class Auth0Controller extends Controller {
 
@@ -26,6 +27,8 @@ class Auth0Controller extends Controller {
             ]);
 
             $decoded = $verifier->verifyAndDecode($token);
+            // Log::info('Token: '.$token);
+
             return $decoded;
 
         }
