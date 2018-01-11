@@ -45,4 +45,10 @@ class User_Controller extends Controller {
         return response()->json($user_);
     }
 
+    public function getUser_ByUserId($userId){
+        $intUserId = intval($userId);
+        $user_ = User_::where('userId', $intUserId)->get();
+        return response()->json($user_);
+    }
+
 }

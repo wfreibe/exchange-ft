@@ -31,10 +31,22 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
     });
     */
 
-    $router->get('users/{email}', ['middleware' => 'auth', function ($email) {
+    $router->get('users/email/{email}', ['middleware' => 'auth', function ($email) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getUser_ByEmail($email);
     }]);
+
+    $router->get('users/{userId}', ['middleware' => 'auth', function ($userId) {
+        $res = new App\Http\Controllers\User_Controller();
+        return $res->getUser_ByUserId($userId);
+    }]);
+
+    /*
+    $router->get('users/{userId}', function ($userId) {
+        $res = new App\Http\Controllers\User_Controller();
+        return $res->getUser_ByUserId($userId)->original[0];
+    });
+    */
 
     /*
     $router->get('users/{email}/organizations', function ($email) {
