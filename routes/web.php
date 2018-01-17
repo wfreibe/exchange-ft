@@ -43,12 +43,16 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         return $res->getUser_ByEmail($email);
     }]);
 
-
-
     $router->get('users/{userId}', ['middleware' => 'auth', function ($userId) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getUser_ByUserId($userId)->original[0];
     }]);
+
+    $router->get('users/search/{searchString}', ['middleware' => 'auth', function ($searchString) {
+        $res = new App\Http\Controllers\User_Controller();
+        return $res->getUser_BySearchString($searchString);
+    }]);
+
 
     /*
     $router->get('users/{userId}', function ($userId) {

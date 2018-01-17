@@ -51,4 +51,9 @@ class User_Controller extends Controller {
         return response()->json($user_);
     }
 
+    public function getUser_BySearchString($searchString) {
+        $user_ = User_::where('lastName','LIKE',"%{$searchString}%")->orWhere('firstName','LIKE',"%{$searchString}%")->orWhere('emailAddress','LIKE',"%{$searchString}%")->get();
+        return response()->json($user_);
+    }
+
 }
