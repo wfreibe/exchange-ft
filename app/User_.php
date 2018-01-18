@@ -14,20 +14,22 @@ class User_ extends Model {
 
     // comment w.f. disable updated_at and created_at
     public $timestamps = false;
-
     protected $table = 'user_';
+
+    public $primaryKey  = 'emailAddress';
+
     protected $fillable = ['uuid_', 'userId', 'emailAddress', 'firstName', 'lastName', 'greeting', 'jobTitle', 'screenName'];
 
-// rawUser.userId,
-// rawUser.contactId,
-// rawUser.screenName,
-// rawUser.emailAddress,
-// rawUser.languageId,
-// rawUser.greeting,
-// rawUser.firstName,
-// rawUser.lastName,
-// rawUser.jobTitle,
-// rawUser.rating,
-// rawUser.portraitId
+    // rawUser.userId,
+    // rawUser.contactId,
+    // rawUser.screenName,
+    // rawUser.emailAddress,
+    // rawUser.languageId,
+    // rawUser.greeting,
+    // rawUser.firstName,
+    // rawUser.lastName,
+    // rawUser.jobTitle,
+    // rawUser.rating,
+    // rawUser.portraitId
 
 }

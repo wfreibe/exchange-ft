@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 use App\User_;
+use App\Counter;
 use Illuminate\Http\Request;
 
 class User_Controller extends Controller {
@@ -16,6 +17,8 @@ class User_Controller extends Controller {
     // https://medium.com/@paulredmond/how-to-submit-json-post-requests-to-lumen-666257fe8280 +++
     // https://laravel.com/docs/5.5/eloquent +++
     // https://laravel.com/api/5.5/Illuminate/Http/Request.html +++
+
+    const COUNTER_NAME = "com.liferay.counter.model.Counter";
 
     public function createUser_(Request $request){
 
@@ -25,17 +28,35 @@ class User_Controller extends Controller {
         // $user_ = User_::firstOrCreate(array('name' => 'John'));
 
         $aRequest = $request->json()->all();
-        $aRequest["uuid_"] = $this->makeUuid($this->generateUId());
 
-        try {
+       if(User_::find($aRequest["emailAddress"]) == NULL) {
 
-            $user_ = User_::firstOrCreate($aRequest);
-            $user_["SUCCESS"] = "true";
+           $aRequest["uuid_"] = $this->makeUuid($this->generateUId());
 
-        } catch (\Exception $e) {
-            $user_["SUCCESS"] = "false";
-            $user_["ERROR-MSG"] = $e;
-        }
+           $counter = Counter::where('name', self::COUNTER_NAME)->get();
+           foreach ($counter as $item) {
+               $item->name = self::COUNTER_NAME;
+               $newValue = intval($item->currentId)+1;
+               $item->currentId = $newValue;
+               $item->save();
+               $aRequest["userId"] = $newValue;
+           }
+
+           try {
+
+               $user_ = User_::firstOrCreate($aRequest);
+               $user_["SUCCESS"] = "true";
+
+           } catch (\Exception $e) {
+
+               $user_["SUCCESS"] = "false";
+               $user_["ERROR-MSG"] = $e;
+           }
+
+       } else {
+           $user_["SUCCESS"] = "false";
+           $user_["ERROR-MSG"] = "user is already existing";
+       }
 
         return response()->json($user_);
     }
