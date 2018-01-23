@@ -12,11 +12,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class User_ extends Model {
 
-    // comment w.f. disable updated_at and created_at
+    // comment disable updated_at and created_at
     public $timestamps = false;
     protected $table = 'user_';
 
-    public $primaryKey  = 'emailAddress';
+    public $primaryKey  = 'userId';
 
     protected $fillable = ['uuid_', 'userId', 'emailAddress', 'firstName', 'lastName', 'greeting', 'jobTitle', 'screenName'];
 

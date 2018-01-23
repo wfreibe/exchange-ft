@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 use App\User_;
 use App\Counter;
 use Illuminate\Http\Request;
+use Log;
 
 class User_Controller extends Controller {
 
@@ -26,8 +27,8 @@ class User_Controller extends Controller {
 
         // Retrieve the user by the attributes, or create it if it doesn't exist...
         // $user_ = User_::firstOrCreate(array('name' => 'John'));
-
         $aRequest = $request->json()->all();
+        // Log::info('User_Controller res: '.print_r($aRequest, true));
 
        if(User_::find($aRequest["emailAddress"]) == NULL) {
 
@@ -44,13 +45,16 @@ class User_Controller extends Controller {
 
            try {
 
+               unset($aRequest['rating']);
                $user_ = User_::firstOrCreate($aRequest);
                $user_["SUCCESS"] = "true";
+               // Log::info('User_Controller res: SUCCESS');
 
            } catch (\Exception $e) {
 
                $user_["SUCCESS"] = "false";
                $user_["ERROR-MSG"] = $e;
+               //Log::info('User_Controller res: ERROR'.print_r($e, true));
            }
 
        } else {

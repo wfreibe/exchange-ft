@@ -43,7 +43,7 @@ class CorsMiddleware {
             $response->header($key, $value);
         }
 
-        //Log::info('CorsMiddleware res: '.print_r($response, true));
+        // Log::info('CorsMiddleware res: '.print_r($response, true));
 
         return $response;
     }
