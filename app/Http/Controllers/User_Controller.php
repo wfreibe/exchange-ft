@@ -65,19 +65,30 @@ class User_Controller extends Controller {
         return response()->json($user_);
     }
 
-    public function updateUser_(Request $request, $id){
+    public function updateUser_($id, Request $request) {
+
+        // Log::info('User_Controller res: '.print_r($id, true));
+
         $user_  = User_::find($id);
-        $user_->emailAddress = $request->input('emailAddress');
-        $user_->firstName = $request->input('firstName');
-        $user_->lastName = $request->input('lastName');
+        $aRequest = $request->json()->all();
+
+        $user_->screenName = $aRequest["screenName"];
+        $user_->emailAddress = $aRequest["emailAddress"];
+        $user_->greeting = $aRequest["greeting"];
+        $user_->firstName = $aRequest["firstName"];
+        $user_->lastName = $aRequest["lastName"];
+        $user_->jobTitle = $aRequest["jobTitle"];
+
         $user_->save();
         return response()->json($user_);
     }
 
-    public function deleteUser_($id){
+    public function deleteUser_($id) {
+
+        Log::info('User_Controller res: '.print_r($id, true));
+
         $user_  = User_::find($id);
         $user_->delete();
-
         return response()->json('Removed successfully.');
     }
 
@@ -120,6 +131,7 @@ class User_Controller extends Controller {
         $id = substr_replace($id, "-", 18, 0);
         $id = substr_replace($id, "-", 23, 0);
         return $id;
+
     }
 
 }

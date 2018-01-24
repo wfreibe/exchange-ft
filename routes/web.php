@@ -35,6 +35,11 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         return $res->createUser_($request);
     }]);
 
+    $router->put('users/{userId}', ['middleware' => 'auth', function ($userId, Illuminate\Http\Request $request) {
+        $res = new App\Http\Controllers\User_Controller();
+        return $res->updateUser_($userId, $request);
+    }]);
+
     $router->get('users/email/{email}', ['middleware' => 'auth', function ($email) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getUser_ByEmail($email);
@@ -43,6 +48,11 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
     $router->get('users/{userId}', ['middleware' => 'auth', function ($userId) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getUser_ByUserId($userId)->original[0];
+    }]);
+
+    $router->delete('users/{userId}', ['middleware' => 'auth', function ($userId) {
+        $res = new App\Http\Controllers\User_Controller();
+        return $res->deleteUser_($userId);
     }]);
 
     $router->get('users/search/{searchString}', ['middleware' => 'auth', function ($searchString) {
