@@ -85,7 +85,7 @@ class User_Controller extends Controller {
 
     public function deleteUser_($id) {
 
-        Log::info('User_Controller res: '.print_r($id, true));
+        // Log::info('User_Controller res: '.print_r($id, true));
 
         $user_  = User_::find($id);
         $user_->delete();

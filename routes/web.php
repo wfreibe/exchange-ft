@@ -45,6 +45,15 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         return $res->getUser_ByEmail($email);
     }]);
 
+    $router->get('users/{email}/check', ['middleware' => 'auth', function ($email) {
+        $res = new App\Http\Controllers\User_Controller();
+        if(empty($res->getUser_ByEmail($email)->original[0]["emailAddress"])) {
+            return "false";
+        } else {
+            return "true";
+        }
+    }]);
+
     $router->get('users/{userId}', ['middleware' => 'auth', function ($userId) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getUser_ByUserId($userId)->original[0];
