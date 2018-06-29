@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 use App\User_;
+use App\Users_orgs;
 use App\Counter;
 use Illuminate\Http\Request;
 use Log;
@@ -111,6 +112,22 @@ class User_Controller extends Controller {
     public function getUser_BySearchString($searchString) {
         $user_ = User_::where('lastName','LIKE',"%{$searchString}%")->orWhere('firstName','LIKE',"%{$searchString}%")->orWhere('emailAddress','LIKE',"%{$searchString}%")->get();
         return response()->json($user_);
+    }
+
+    public function getOrganizationUsersByOrgId($orgId) {
+        $intOrgId = intval($orgId);
+        $user_orgs = Users_orgs::where('organizationId', $intOrgId)->get();
+
+        $aUsersInOrg = array();
+        foreach ($user_orgs as $user_org) {
+            $users_org = $user_org->userId;
+            array_push($aUsersInOrg, $users_org);
+        }
+
+        $users = User_::find($aUsersInOrg);
+        
+        return response()->json($users);
+
     }
 
     /**

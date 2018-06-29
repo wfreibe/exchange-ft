@@ -54,6 +54,11 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         }
     }]);
 
+    $router->get('organizations/{orgId}/users', ['middleware' => 'auth', function ($orgId) {
+        $res = new App\Http\Controllers\User_Controller();
+        return $res->getOrganizationUsersByOrgId($orgId);
+    }]);
+
     $router->get('users/{userId}', ['middleware' => 'auth', function ($userId) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getUser_ByUserId($userId)->original[0];
