@@ -1,4 +1,4 @@
-# Exchange FT API (Lumen PHP Framework)
+# FT API (Lumen PHP Framework)
 
 1) run #composer install to get also the vendor folder
 
