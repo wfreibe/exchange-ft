@@ -59,6 +59,16 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         return $res->getOrganizationUsersByOrgId($orgId);
     }]);
 
+    $router->get('organizations/first/users/{userId}', ['middleware' => 'auth', function ($userId) {
+        $res = new App\Http\Controllers\User_Controller();
+        return $res->getFirstOrganizationUsers($userId);
+    }]);
+
+    $router->get('organizations/first/users/email/{email}', ['middleware' => 'auth', function ($email) {
+        $res = new App\Http\Controllers\User_Controller();
+        return $res->getFirstOrganizationUsersByEmail($email);
+    }]);
+
     $router->get('users/{userId}', ['middleware' => 'auth', function ($userId) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getUser_ByUserId($userId)->original[0];
@@ -77,6 +87,11 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
     $router->get('users/{email}/organizations', ['middleware' => 'auth', function ($email) {
         $res = new App\Http\Controllers\OrganizationController();
         return $res->getUserOrganizationsByEmail($email);
+    }]);
+
+    $router->get('users/{email}/organizations/first', ['middleware' => 'auth', function ($email) {
+        $res = new App\Http\Controllers\OrganizationController();
+        return $res->getFirstUserOrganizationByEmail($email);
     }]);
 
     $router->get('users/{email}/organizations/{orgname}/projects', ['middleware' => 'auth', function ($email, $orgname) {

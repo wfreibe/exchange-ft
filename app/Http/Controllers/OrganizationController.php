@@ -14,6 +14,11 @@ use App\Users_orgs;
 
 class OrganizationController extends Controller {
 
+    /**
+     * @deprecated in future lets use EX-ID mapping table
+     * @param $email
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getUserOrganizationsByEmail($email){
 
         $user_ = User_::where('emailAddress', $email)->get();
@@ -30,6 +35,21 @@ class OrganizationController extends Controller {
         }
 
         $organizations = Organization::find($aUsers_org);
+
+        return response()->json($organizations);
+
+    }
+
+    /**
+     * @deprecated in future lets use EX-ID mapping table
+     * @param $email
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getFirstUserOrganizationByEmail($email){
+
+        $user_ = User_::where('emailAddress', $email)->get();
+        $users_orgs = Users_orgs::where('userId', $user_[0]["userId"])->get();
+        $organizations[] = Organization::find($users_orgs[0]['organizationId']);
 
         return response()->json($organizations);
 

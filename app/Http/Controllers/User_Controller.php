@@ -125,7 +125,45 @@ class User_Controller extends Controller {
         }
 
         $users = User_::find($aUsersInOrg);
-        
+        return response()->json($users);
+
+    }
+
+    public function getFirstOrganizationUsers($userId) {
+
+        $intUserId = intval($userId);
+        $users_orgs = Users_orgs::where('userId', $intUserId)->get();
+        $users_orgs = Users_orgs::where('organizationId', $users_orgs[0]['organizationId'])->get();
+
+        $aUsersInOrg = array();
+        foreach ($users_orgs as $user_org) {
+            $users_org = $user_org->userId;
+            array_push($aUsersInOrg, $users_org);
+        }
+        $users = User_::find($aUsersInOrg);
+
+        return response()->json($users);
+
+    }
+
+    /**
+     * @deprecated in future lets use EX-ID mapping table
+     * @param $email
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getFirstOrganizationUsersByEmail($email) {
+
+        $user_ = User_::where('emailAddress', $email)->get();
+        $users_orgs = Users_orgs::where('userId', $user_[0]["userId"])->get();
+        $users_orgs = Users_orgs::where('organizationId', $users_orgs[0]['organizationId'])->get();
+
+        $aUsersInOrg = array();
+        foreach ($users_orgs as $user_org) {
+            $users_org = $user_org->userId;
+            array_push($aUsersInOrg, $users_org);
+        }
+        $users = User_::find($aUsersInOrg);
+
         return response()->json($users);
 
     }
@@ -148,7 +186,6 @@ class User_Controller extends Controller {
         $id = substr_replace($id, "-", 18, 0);
         $id = substr_replace($id, "-", 23, 0);
         return $id;
-
     }
 
 }
