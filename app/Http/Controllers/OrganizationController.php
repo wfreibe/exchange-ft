@@ -52,7 +52,6 @@ class OrganizationController extends Controller {
         $organizations[] = Organization::find($users_orgs[0]['organizationId']);
 
         return response()->json($organizations);
-
     }
 
 }

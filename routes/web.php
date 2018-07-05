@@ -94,9 +94,14 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         return $res->getFirstUserOrganizationByEmail($email);
     }]);
 
-    $router->get('users/{email}/organizations/{orgname}/projects', ['middleware' => 'auth', function ($email, $orgname) {
+    $router->get('users/{email}/organizations/{frdlurl}/projects', ['middleware' => 'auth', function ($email, $frdlurl) {
         $res = new App\Http\Controllers\GroupController();
-        return $res->getUserOrganizationProjectsByEmailAndOrgName($email, $orgname);
+        return $res->getUserOrganizationProjectsByEmailAndFriendlyUrl($email, $frdlurl);
+    }]);
+
+    $router->get('users/{email}/organizations/projects/first', ['middleware' => 'auth', function ($email) {
+        $res = new App\Http\Controllers\GroupController();
+        return $res->getFistUserOrganizationProjectsByEmailAndFriendlyUrl($email);
     }]);
 
 });
