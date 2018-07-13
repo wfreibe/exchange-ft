@@ -94,14 +94,22 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         return $res->getFirstUserOrganizationByEmail($email);
     }]);
 
-    $router->get('users/{email}/organizations/{frdlurl}/projects', ['middleware' => 'auth', function ($email, $frdlurl) {
-        $res = new App\Http\Controllers\GroupController();
-        return $res->getUserOrganizationProjectsByEmailAndFriendlyUrl($email, $frdlurl);
+    $router->get('users/{email}/organizations/{orgId}', ['middleware' => 'auth', function ($email, $orgId) {
+        $res = new App\Http\Controllers\OrganizationController();
+        if($orgId == "first") {
+            return $res->getFirstUserOrganizationByEmail($email);
+        } else {
+            return $res->getUserOrganizationByEmailAndOrgId($email, $orgId);
+        }
     }]);
 
-    $router->get('users/{email}/organizations/projects/first', ['middleware' => 'auth', function ($email) {
+    $router->get('users/{email}/organizations/{frdlurl}/projects', ['middleware' => 'auth', function ($email, $frdlurl) {
         $res = new App\Http\Controllers\GroupController();
-        return $res->getFistUserOrganizationProjectsByEmailAndFriendlyUrl($email);
+        if($frdlurl == "first") {
+            return $res->getFistUserOrganizationProjectsByEmailAndFriendlyUrl($email);
+        } else {
+            return $res->getUserOrganizationProjectsByEmailAndFriendlyUrl($email, $frdlurl);
+        }
     }]);
 
 });

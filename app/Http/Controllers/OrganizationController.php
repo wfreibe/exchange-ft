@@ -54,4 +54,32 @@ class OrganizationController extends Controller {
         return response()->json($organizations);
     }
 
+    /**
+     * @param $email
+     * @param $orgId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUserOrganizationByEmailAndOrgId($email, $orgId) {
+
+        $user_ = User_::where('emailAddress', $email)->get();
+        $userId = null;
+        foreach ($user_ as $user) {
+            $userId = $user->userId;
+        }
+
+        $users_orgs = Users_orgs::where('userId', $userId)->get();
+        $aUsers_org = array();
+        foreach ($users_orgs as $users_org) {
+            $users_org = $users_org->organizationId;
+            if($users_org == $orgId) {
+                array_push($aUsers_org, $users_org);
+            }
+        }
+
+        $organizations = Organization::find($aUsers_org);
+
+        return response()->json($organizations);
+
+    }
+
 }
