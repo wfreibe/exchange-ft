@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\User;
 use Illuminate\Support\ServiceProvider;
 use App\Http\Controllers\Auth0Controller;
 use Log;
@@ -14,17 +13,15 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register() {
-        //
-    }
+    public function register() {}
 
     /**
      * Boot the authentication services for the application.
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
+
         // Here you may define how you wish users to be authenticated for your Lumen
         // application. The callback which receives the incoming request instance
         // should return either a User instance or null. You're free to obtain
@@ -39,14 +36,11 @@ class AuthServiceProvider extends ServiceProvider
 
                 $auth0Controller = new Auth0Controller();
                 $res = $auth0Controller->setCurrentToken($header);
-                // Log::info('AuthServiceProvider res1: '.print_r($res, true));
-
                 return $res;
 
             }
             catch(\Auth0\SDK\Exception\CoreException $e) {
 
-                // Log::info('AuthServiceProvider res2: '.print_r($e, true));
                 header('HTTP/1.0 401 Unauthorized');
                 echo $e;
                 exit();

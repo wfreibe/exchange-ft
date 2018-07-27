@@ -103,6 +103,15 @@ class User_Controller extends Controller {
         return response()->json($user_);
     }
 
+    public function checkIfUserExistsByEmail($email) {
+        $user_ = User_::where('emailAddress', $email)->get();
+        if(count($user_)>0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function getUser_ByUserId($userId){
         $intUserId = intval($userId);
         $user_ = User_::where('userId', $intUserId)->get();

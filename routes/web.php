@@ -56,18 +56,39 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
 
     $router->get('organizations/{orgId}/users', ['middleware' => 'auth', function ($orgId) {
         $res = new App\Http\Controllers\User_Controller();
-        return $res->getOrganizationUsersByOrgId($orgId);
+        if($orgId == "first") {
+            $emailFromToken = \App\Http\Controllers\Auth0Controller::getUserEmailFromToken();
+            $userController = new \App\Http\Controllers\User_Controller();
+
+            if($userController->checkIfUserExistsByEmail($emailFromToken)) {
+                return $res->getFirstOrganizationUsersByEmail($emailFromToken);
+            } else {
+                return json_encode(array());
+            }
+        } else {
+            return $res->getOrganizationUsersByOrgId($orgId);
+        }
     }]);
 
+    /*
     $router->get('organizations/first/users/{userId}', ['middleware' => 'auth', function ($userId) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getFirstOrganizationUsers($userId);
     }]);
-
+    */
+    /*
     $router->get('organizations/first/users/email/{email}', ['middleware' => 'auth', function ($email) {
         $res = new App\Http\Controllers\User_Controller();
         return $res->getFirstOrganizationUsersByEmail($email);
     }]);
+    */
+    /*
+    $router->get('organizations/first/users', ['middleware' => 'auth', function () {
+        $emailFromToken = \App\Http\Controllers\Auth0Controller::getUserEmailFromToken();
+        $res = new App\Http\Controllers\User_Controller();
+        return $res->getFirstOrganizationUsersByEmail($emailFromToken);
+    }]);
+    */
 
     $router->get('users/{userId}', ['middleware' => 'auth', function ($userId) {
         $res = new App\Http\Controllers\User_Controller();
@@ -84,16 +105,26 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         return $res->getUser_BySearchString($searchString);
     }]);
 
+
+
     $router->get('users/{email}/organizations', ['middleware' => 'auth', function ($email) {
         $res = new App\Http\Controllers\OrganizationController();
         return $res->getUserOrganizationsByEmail($email);
     }]);
-
-    $router->get('users/{email}/organizations/first', ['middleware' => 'auth', function ($email) {
+    $router->get('user/organizations', ['middleware' => 'auth', function () {
+        $emailFromToken = \App\Http\Controllers\Auth0Controller::getUserEmailFromToken();
+        $userController = new \App\Http\Controllers\User_Controller();
         $res = new App\Http\Controllers\OrganizationController();
-        return $res->getFirstUserOrganizationByEmail($email);
+
+        if($userController->checkIfUserExistsByEmail($emailFromToken)) {
+            return $res->getUserOrganizationsByEmail($emailFromToken);
+        } else {
+            return json_encode(array());
+        }
     }]);
 
+
+    
     $router->get('users/{email}/organizations/{orgId}', ['middleware' => 'auth', function ($email, $orgId) {
         $res = new App\Http\Controllers\OrganizationController();
         if($orgId == "first") {
@@ -102,13 +133,63 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
             return $res->getUserOrganizationByEmailAndOrgId($email, $orgId);
         }
     }]);
+    $router->get('user/organizations/{orgId}', ['middleware' => 'auth', function ($orgId) {
+        $emailFromToken = \App\Http\Controllers\Auth0Controller::getUserEmailFromToken();
+        $userController = new \App\Http\Controllers\User_Controller();
+        $res = new App\Http\Controllers\OrganizationController();
 
-    $router->get('users/{email}/organizations/{frdlurl}/projects', ['middleware' => 'auth', function ($email, $frdlurl) {
+        if($userController->checkIfUserExistsByEmail($emailFromToken)) {
+            if($orgId == "first") {
+                return $res->getFirstUserOrganizationByEmail($emailFromToken);
+            } else {
+                return $res->getUserOrganizationByEmailAndOrgId($emailFromToken, $orgId);
+            }
+        } else {
+            return json_encode(array());
+        }
+    }]);
+
+
+
+    $router->get('user/{email}/organizations/{treePath}/projects', ['middleware' => 'auth', function ($email, $treePath) {
         $res = new App\Http\Controllers\GroupController();
-        if($frdlurl == "first") {
+        if($treePath == "first") {
             return $res->getFistUserOrganizationProjectsByEmailAndFriendlyUrl($email);
         } else {
-            return $res->getUserOrganizationProjectsByEmailAndFriendlyUrl($email, $frdlurl);
+            return $res->getUserOrganizationProjectsByEmailAndFriendlyUrl($email, $treePath);
+        }
+    }]);
+    $router->get('user/organizations/{treePath}/projects', ['middleware' => 'auth', function ($treePath) {
+        $emailFromToken = \App\Http\Controllers\Auth0Controller::getUserEmailFromToken();
+        $userController = new \App\Http\Controllers\User_Controller();
+        $res = new App\Http\Controllers\GroupController();
+
+        if($userController->checkIfUserExistsByEmail($emailFromToken)) {
+            if($treePath == "first") {
+                return $res->getFistUserOrganizationProjectsByEmailAndFriendlyUrl($emailFromToken);
+            } else {
+                return $res->getUserOrganizationProjectsByEmailAndFriendlyUrl($emailFromToken, $treePath);
+            }
+        } else {
+            return json_encode(array());
+        }
+    }]);
+
+
+
+    $router->get('user/organization/projects/{friendlyURL}/documents', ['middleware' => 'auth', function ($friendlyURL) {
+        $emailFromToken = \App\Http\Controllers\Auth0Controller::getUserEmailFromToken();
+        $userController = new \App\Http\Controllers\User_Controller();
+        $res = new App\Http\Controllers\DocumentController();
+
+        if($userController->checkIfUserExistsByEmail($emailFromToken)) {
+            if($friendlyURL == "first") {
+                return $res->getFistUserOrganizationProjectDocumentsByEmailAndFriendlyUrl($emailFromToken);
+            } else {
+                return $res->getUserOrganizationProjectDocumentsByEmailAndFriendlyUrl($emailFromToken, $friendlyURL);
+            }
+        } else {
+            return json_encode(array());
         }
     }]);
 

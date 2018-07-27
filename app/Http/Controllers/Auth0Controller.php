@@ -14,6 +14,13 @@ use Log;
 
 class Auth0Controller extends Controller {
 
+    public static $_userEmailFromToken;
+
+    /**
+     * @param $token
+     * @return object
+     * @throws \Auth0\SDK\Exception\CoreException
+     */
     public function setCurrentToken($token) {
 
         try {
@@ -27,7 +34,15 @@ class Auth0Controller extends Controller {
             ]);
 
             $decoded = $verifier->verifyAndDecode($token);
-            // Log::info('Token: '.$token);
+
+            $aDecoded =  (array) $decoded;
+            if(getenv('USE_TESTUSER_EMAIL')=="TRUE") {
+                $aDecoded[getenv('ACCESS_TOKEN_USER_EMAIL')] = getenv('ACCESS_TOKEN_USER_EMAIL_TESTUSER');
+            }
+            if (array_key_exists(getenv('ACCESS_TOKEN_USER_EMAIL'), $aDecoded)) {
+                Auth0Controller::$_userEmailFromToken = $aDecoded[getenv('ACCESS_TOKEN_USER_EMAIL')];
+                Log::info(__CLASS__. 'user email from token: '.$aDecoded[getenv('ACCESS_TOKEN_USER_EMAIL')]);
+            }
 
             return $decoded;
 
@@ -37,5 +52,13 @@ class Auth0Controller extends Controller {
         }
 
     }
+
+    /**
+     * @return mixed
+     */
+    public static function getUserEmailFromToken() {
+        return Auth0Controller::$_userEmailFromToken;
+    }
+
 
 }

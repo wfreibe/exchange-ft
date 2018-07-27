@@ -20,7 +20,7 @@ class OrganizationController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      */
     public function getUserOrganizationsByEmail($email){
-
+        
         $user_ = User_::where('emailAddress', $email)->get();
         $userId = null;
         foreach ($user_ as $user) {
@@ -28,6 +28,7 @@ class OrganizationController extends Controller {
         }
 
         $users_orgs = Users_orgs::where('userId', $userId)->get();
+
         $aUsers_org = array();
         foreach ($users_orgs as $users_org) {
             $users_org = $users_org->organizationId;
@@ -45,7 +46,7 @@ class OrganizationController extends Controller {
      * @param $email
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getFirstUserOrganizationByEmail($email){
+    public function getFirstUserOrganizationByEmail($email) {
 
         $user_ = User_::where('emailAddress', $email)->get();
         $users_orgs = Users_orgs::where('userId', $user_[0]["userId"])->get();
