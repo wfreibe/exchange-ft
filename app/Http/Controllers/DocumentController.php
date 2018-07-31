@@ -31,9 +31,8 @@ class DocumentController extends Controller {
             foreach ($user_ as $user) {
                 $userId = $user->userId;
             }
+
             // TODO check also if the user is in the organization
-
-
             // string(12) "53154-122342"
             $groupId = substr( $friendlyURL, strrpos( $friendlyURL, '-' )+1 );
             $dlfileentry = Dlfileentry::where('groupId', $groupId)->get();
@@ -83,6 +82,49 @@ class DocumentController extends Controller {
             }*/
 
             return response()->json($dlfileentry);
+
+    }
+
+    public function getFistUserOrganizationProjectDocumentsByEmailAndFriendlyUrl($emailFromToken) {
+
+        $user_ = User_::where('emailAddress', $emailFromToken)->get();
+        $userId = null;
+        foreach ($user_ as $user) {
+            $userId = $user->userId;
+        }
+        //  $user_[0]["userId"]
+        $users_orgs = Users_orgs::where('userId', $userId)->get();
+        $groups_orgs = Groups_orgs::where('organizationId', $users_orgs[0]['organizationId'])->get();
+        $aGroups_org = array();
+        foreach ($groups_orgs as $groups_org) {
+            $groups_org = $groups_org->groupId;
+            array_push($aGroups_org, $groups_org);
+        }
+
+        $groups = Group::find($aGroups_org);
+        //Log::info('GroupController res: '.print_r($groups, true));
+
+        // add projects from user_groups table
+        $users_groups = Users_groups::where('userId', $userId)->get();
+        $aUsersGroups = array();
+        foreach ($users_groups as $users_group) {
+            array_push($aUsersGroups, $users_group->groupId);
+        }
+
+        $aGroupsOfUserId = array();
+        foreach ($groups as $group) {
+            if($group->creatorUserId == $userId) {
+                array_push($aGroupsOfUserId, $group);
+            }
+        }
+
+        $friendlyURL = $aGroupsOfUserId[0]['friendlyURL'];
+
+        // TODO check also if the user is in the organization
+        $groupId = substr( $friendlyURL, strrpos( $friendlyURL, '-' )+1 );
+        $dlfileentry = Dlfileentry::where('groupId', $groupId)->get();
+
+        return response()->json($dlfileentry);
 
     }
 
