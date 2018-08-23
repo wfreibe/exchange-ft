@@ -8,13 +8,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Organization;
 use App\User_;
 use App\Users_orgs;
 use App\Groups_orgs;
 use App\Users_groups;
 use App\Group;
 use App\Dlfileentry;
+
+use Aws\S3\S3Client;
+use League\Flysystem\AwsS3v3\AwsS3Adapter;
+use League\Flysystem\Filesystem;
+
 use Log;
 
 class DocumentController extends Controller {
@@ -35,7 +39,7 @@ class DocumentController extends Controller {
             // TODO check also if the user is in the organization
             // string(12) "53154-122342"
             $groupId = substr( $friendlyURL, strrpos( $friendlyURL, '-' )+1 );
-            $dlfileentry = Dlfileentry::where('groupId', $groupId)->get();
+            $dlfileentries = Dlfileentry::where('groupId', $groupId)->get();
 
             
 
@@ -81,7 +85,7 @@ class DocumentController extends Controller {
                 }
             }*/
 
-            return response()->json($dlfileentry);
+            return response()->json($dlfileentries);
 
     }
 
@@ -122,13 +126,89 @@ class DocumentController extends Controller {
 
         // TODO check also if the user is in the organization
         $groupId = substr( $friendlyURL, strrpos( $friendlyURL, '-' )+1 );
-        $dlfileentry = Dlfileentry::where('groupId', $groupId)->get();
+        $dlfileentries = Dlfileentry::where('groupId', $groupId)->get();
 
-        return response()->json($dlfileentry);
+        return response()->json($dlfileentries);
 
     }
 
+    /**
+     * @param $emailFromToken
+     * @param $friendlyURL
+     * @param $fileentryId
+     * @throws \League\Flysystem\FileNotFoundException
+     */
+    public function getUserOrganizationProjectDocumentDownloadByEmailAndFriendlyUrlAndFileentryId($emailFromToken, $friendlyURL, $fileentryId) {
+
+        $user_ = User_::where('emailAddress', $emailFromToken)->get();
+        $userId = null;
+        foreach ($user_ as $user) {
+            $userId = $user->userId;
+        }
+
+        $groupId = substr( $friendlyURL, strrpos( $friendlyURL, '-' )+1 );
+        $dlfileentries = Dlfileentry::where('groupId', $groupId)->get();
+
+        foreach ($dlfileentries as $file) {
+            if($file->fileEntryId == $fileentryId) {
+                $sCompanyId = $file->companyId;
+                $sExtension = $file->extension;
+                $sMimeType = $file->mimeType;
+                $sTitle = $file->title;
+                $sGroupId = $file->groupId;
+                $sName = $file->name;
+
+            }
+        }
+        
+        // http://www.sibenye.com/2017/02/16/how-to-integrate-flysystem-with-lumen-framework/
+        // https://flysystem.thephpleague.com/docs/adapter/aws-s3/ +++
+        // https://nicksilvestro.net/2016/05/28/adding-laravels-storage-facade-into-lumen/ +++
+        // https://chrisblackwell.me/upload-files-to-aws-s3-using-laravel/ +++
+
+        $client = S3Client::factory([
+            'credentials' => [
+                'key'    => getenv('S3_ACCESS_KEY'),
+                'secret' => getenv('S3_ACCESS_SECRET'),
+            ],
+            'region' => 'us-east-1', // us-east-1 // eu-west-1
+            'version' => 'latest'
+        ]);
 
 
+        $adapter = new AwsS3Adapter($client, 'nem-exchange-build');
+        $filesystem = new Filesystem($adapter);
 
+        // $filesystem->read('10153/10179/2101');
+        // $contents = $filesystem->listContents('10153/10179/2101');
+
+        // Retrieve a read-stream
+        $path = $sCompanyId."/".$sGroupId."/".$sName."/1.0";
+        // $stream = $filesystem->readStream('10153/10179/2101/1.0'); // 23010
+        $stream = $filesystem->readStream($path); // 23010
+        $contents = stream_get_contents($stream); // stream_get_contents — Reads remainder of a stream into a string
+        fclose($stream);
+
+        // http://mattallan.org/posts/getting-started-with-php-streams/ +++
+        // https://stackoverflow.com/questions/6914912/streaming-a-large-file-using-php
+
+        //var_dump($sMimeType);
+        //var_dump($sTitle);
+        //var_dump($sExtension);
+        //var_dump($contents);
+        //die;
+
+        // send the headers
+        header("Content-Disposition: attachment; filename=$sTitle;");
+        header("Content-Type: $sMimeType");
+        header('Content-Length: ' . 1024 * 1024);
+        header('Content-Transfer-Encoding: binary');
+        //header('Content-Length: ' . filesize($contents));
+
+        echo $contents;
+
+        //fpassthru($stream);
+        //exit;
+
+    }
 }

@@ -193,6 +193,18 @@ $router->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], fun
         }
     }]);
 
+    $router->get('user/organization/projects/{friendlyURL}/documents/{fileentryId}', ['middleware' => 'auth', function ($friendlyURL, $fileentryId) {
+        $emailFromToken = \App\Http\Controllers\Auth0Controller::getUserEmailFromToken();
+        $userController = new \App\Http\Controllers\User_Controller();
+        $res = new App\Http\Controllers\DocumentController();
+
+        if($userController->checkIfUserExistsByEmail($emailFromToken)) {
+            return $res->getUserOrganizationProjectDocumentDownloadByEmailAndFriendlyUrlAndFileentryId($emailFromToken, $friendlyURL, $fileentryId);
+        } else {
+            return json_encode(array());
+        }
+    }]);
+
 });
 
 // for auth see: https://lumen.laravel.com/docs/5.5/middleware
